@@ -23,30 +23,35 @@ class Stack:
         if self.top:
             return False
         return True
-
 class FreqStack:
     def __init__(self):
         self.count = {}
-        self.stc = {}
+        self.stc = Stack()
         self.max = 0
     def push(self, val):
         if val in self.count.keys():
             self.count[val] += 1
         else:
             self.count[val] = 1
-        if self.count[val] in self.stc:
-            self.stc[self.count[val]].push(val)
-        else:
-            self.stc[self.count[val]] = Stack()
-            self.stc[self.count[val]].push(val)
-        self.max = max(self.stc.keys())
-
+        self.stc.push(val)
+        self.max = max(self.count.values())
     def pop(self):
-        el = self.stc[self.max].delet()
-        self.count[el] -= 1
-        if self.stc[self.max].is_empty():
-            del self.stc[self.max]
-        if not self.stc.get(self.max):
-            self.max -= 1
-        return el
+        i = self.stc.delet()
+        res = [i]
+        while self.count[i] != self.max:
+            i = self.stc.delet()
+            res.append(i)
+        for k in reversed(res[:-1]):
+            self.stc.push(k)
+        self.count[i] -= 1
+        if self.count[i] < 0:
+            self.count[i] = 0
+        self.max = max(self.count.values())
+        return i
 
+
+
+# Your FreqStack object will be instantiated and called as such:
+# obj = FreqStack()
+# obj.push(val)
+# param_2 = obj.pop()
